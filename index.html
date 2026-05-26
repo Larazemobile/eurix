@@ -306,6 +306,12 @@ h2.wtitle b{color:var(--gold);}
 .prod .pname{font-weight:800; font-size:12px; text-transform:capitalize;}
 .prod .pprice{font-weight:900; color:var(--green-d); font-size:13px;}
 .barcode{width:82%; height:16px; display:block; margin:3px auto;}
+.study-pieces{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:8px 0;}
+.study-piece{text-align:center; width:76px;}
+.sp-name{font-weight:700; font-size:11px; color:var(--ink-soft); margin-top:3px;}
+.pay-item{display:flex; gap:12px; align-items:center; text-align:left; background:var(--panel-2); border:3px solid var(--line); border-radius:12px; padding:10px 12px; margin:8px 0; font-weight:700;}
+.pay-item .pay-ic{font-size:30px; flex:none;}
+.pay-item span{font-weight:600; color:var(--ink-soft);}
 /* ---- Eurix: dinero y tienda ---- */
 .read-box{background:var(--panel-2); border:3px solid var(--line); border-radius:12px; padding:14px 16px; text-align:left; font-weight:700; line-height:1.6; margin:0 auto 14px; max-width:540px; box-shadow: inset 3px 3px 0 rgba(255,255,255,.6);}
 .read-box .rt{font-family:var(--pixel); font-weight:700; color:var(--purple-d); font-size:14px; display:block; margin-bottom:6px;}
@@ -491,6 +497,20 @@ function shopAnswerChange(i){ if(!SHOP||SHOP.phase!=='paying') return; SHOP.phas
     $("qcard").innerHTML += '<div style="margin-top:14px"><div class="btn red" onclick="shopStart()">Otro cliente ➜</div></div>'; } }
 
 /* ===== MOTOR ===== */
+/* --- ESTUDIO: dinero --- */
+function pieceName(c){ if(c<100) return c+(c===1?' céntimo':' céntimos'); if(c===100) return '1 euro'; return (c/100)+' euros'; }
+function studyMoney(){ var coins=[1,2,5,10,20,50,100,200], bills=[500,1000,2000,5000], i, cg='', bg='';
+  for(i=0;i<coins.length;i++) cg+='<div class="study-piece">'+pieceSVG(coins[i])+'<div class="sp-name">'+pieceName(coins[i])+'</div></div>';
+  for(i=0;i<bills.length;i++) bg+='<div class="study-piece">'+pieceSVG(bills[i])+'<div class="sp-name">'+pieceName(bills[i])+'</div></div>';
+  $("screen").innerHTML=backBar('Monedas y billetes')+'<div class="panel block"><h2>Monedas y billetes</h2><p class="sub">Estos son los euros que usamos. ¡Conócelos!</p><div style="font-weight:900;margin:6px 0 4px">Monedas</div><div class="study-pieces">'+cg+'</div><div style="font-weight:900;margin:14px 0 4px">Billetes</div><div class="study-pieces">'+bg+'</div></div>';
+  window.scrollTo(0,0); }
+function studyPay(){ var rows=[
+   ['💶','Efectivo','Monedas y billetes que llevas en la mano. Si pagas de más, te dan la vuelta.'],
+   ['💳','Tarjeta','La acercas o la metes en la máquina y el dinero sale de tu banco. No te dan vuelta.'],
+   ['📱','Móvil o reloj','Pagas acercando el móvil o el reloj, igual que una tarjeta.'],
+   ['🧾','El ticket','El papel donde ves lo que has comprado y cuánto has pagado.'] ];
+  var h='',i; for(i=0;i<rows.length;i++) h+='<div class="pay-item"><div class="pay-ic">'+rows[i][0]+'</div><div><b>'+rows[i][1]+'</b><br><span>'+rows[i][2]+'</span></div></div>';
+  $("screen").innerHTML=backBar('Formas de pago')+'<div class="panel block"><h2>Formas de pago</h2><p class="sub">Hay varias maneras de pagar en una tienda.</p>'+h+'</div>'; window.scrollTo(0,0); }
 var QUIZ=null;
 function goHome(){ QUIZ=null; renderHome(); window.scrollTo(0,0); }
 function refreshChip(){ $("chipAv").innerHTML=avatarSVG(DATA.avatar); $("chipName").textContent=DATA.name||"Jugador"; $("chipMedals").textContent=unlockedCount(); }
@@ -508,6 +528,8 @@ function renderHome(){ var s=DATA.stats, medals=unlockedCount();
    +modeCard("var(--green)","target","Sumar la compra","Precios y totales","selPagar()")
    +modeCard("var(--orange)","bolt","La vuelta","El cambio exacto","selVuelta()")
    +modeCard("var(--pink)","cart","La tienda","¡Juega a la caja!","shopStart()")
+   +modeCard("var(--teal)","coin","Monedas y billetes","Conócelos todos","studyMoney()")
+   +modeCard("var(--red)","cart","Formas de pago","Aprende a pagar","studyPay()")
    +modeCard("var(--gold)","trophy","Examen","Pon a prueba lo aprendido","selExam()")
    +modeCard("var(--teal)","star","Medallas","Mira tus logros","renderMedallas()")
    +modeCard("var(--blue)","brain","Progreso","Tu mapa de estrellas","renderProgress()")
