@@ -300,12 +300,19 @@ h2.wtitle b{color:var(--gold);}
 .trow{display:flex; justify-content:space-between; font-weight:700; border-bottom:1px dashed #c9ccdb; padding:3px 0;}
 .tempty{color:var(--ink-soft); font-weight:700; padding:6px;}
 .reg-btns{display:flex; gap:10px; justify-content:center; margin-top:10px;}
-.shop-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
-.prod{padding:8px 6px; text-align:center; cursor:pointer;}
+.shop-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(94px,1fr)); gap:8px;}
+.prod{padding:7px 5px; text-align:center; cursor:pointer; position:relative;}
 .prod .pemoji{font-size:30px; line-height:1.2;}
 .prod .pname{font-weight:800; font-size:12px; text-transform:capitalize;}
 .prod .pprice{font-weight:900; color:var(--green-d); font-size:13px;}
-.barcode{width:82%; height:16px; display:block; margin:3px auto;}
+.barcode{width:100%; height:14px; display:block; margin:4px auto 0;}
+.prod.scanned{opacity:.5; border-color:var(--green);}
+.scanmark{position:absolute; top:3px; right:6px; color:var(--green-d); font-weight:900; font-size:17px;}
+.denoms{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px auto; max-width:440px;}
+.denom{cursor:pointer; padding:2px;} .denom:active{transform:translateY(2px);}
+.change-tray{background:var(--panel-2); border:3px solid var(--line); border-radius:12px; padding:10px; text-align:center; min-height:50px; margin-bottom:8px;}
+.ct-lbl{font-weight:800; margin-bottom:4px;} .ct-pieces{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;}
+.pay-target{font-weight:900; font-size:20px; margin-top:4px;}
 .study-pieces{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:8px 0;}
 .study-piece{text-align:center; width:76px;}
 .sp-name{font-weight:700; font-size:11px; color:var(--ink-soft); margin-top:3px;}
@@ -412,6 +419,7 @@ function sfx(type){ if(!soundOn()) return; try{ var AC=window.AudioContext||wind
   else if(type==='medal'){ seq=[[523,0,.1],[659,.1,.1],[784,.2,.16]]; }
   else if(type==='win'){ seq=[[523,0,.1],[659,.1,.1],[784,.2,.1],[1047,.32,.2]]; }
   else if(type==='start'){ seq=[[392,0,.09],[523,.09,.09],[784,.18,.18]]; }
+  else if(type==='scan'){ seq=[[2050,0,.045],[2600,.05,.06]]; wave='square'; }
   else { seq=[[600,0,.08]]; }
   for(var i=0;i<seq.length;i++){ var n=seq[i], o=ctx.createOscillator(), g=ctx.createGain(); o.type=wave; o.frequency.value=n[0]; o.connect(g); g.connect(ctx.destination); var t0=ctx.currentTime+n[1]; g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.22,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+n[2]); o.start(t0); o.stop(t0+n[2]+0.03); } }catch(e){} }
 function bigGlobeSVG(){ return '<svg viewBox="0 0 48 48" style="width:100%;height:100%"><defs><radialGradient id="wg" cx="38%" cy="30%" r="78%"><stop offset="0" stop-color="#a9e4ff"/><stop offset="45%" stop-color="#3aa0ff"/><stop offset="100%" stop-color="#1f56c8"/></radialGradient></defs><circle cx="24" cy="24" r="20" fill="url(#wg)" stroke="#15172a" stroke-width="3"/><path d="M13 16 q4 -3 8 -1 q3 2 1 5 q-3 2 -6 1 q-4 -2 -3 -5z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/><path d="M27 26 q6 -1 7 4 q1 4 -3 6 q-5 1 -7 -3 q-1 -4 3 -7z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/><ellipse cx="17" cy="15" rx="7" ry="4.4" fill="#ffffff" opacity="0.42" transform="rotate(-25 17 15)"/></svg>'; }
@@ -451,7 +459,7 @@ function genMoney(level){ var d=level==='facil'?[10,20,50,100]:level==='medio'?[
 function genContar(level){ var p=genMoney(level), total=sumP(p), correct=eurStr(total), opts=[correct], g=0, offs=[5,10,20,50,100,-5,-10,-20,-50,-100];
   while(opts.length<3&&g++<70){ var d=total+pick(offs); if(d<=0) continue; var t=eurStr(d); if(opts.indexOf(t)<0) opts.push(t); }
   shuffle(opts); return {money:p,q:'¿Cuánto dinero hay?',opts:opts,a:opts.indexOf(correct),mode:'contar'}; }
-var SHOP_ITEMS=[{n:'manzana',p:80,e:'🍎'},{n:'pan',p:120,e:'🥖'},{n:'leche',p:110,e:'🥛'},{n:'plátano',p:60,e:'🍌'},{n:'chocolate',p:250,e:'🍫'},{n:'agua',p:70,e:'💧'},{n:'galletas',p:175,e:'🍪'},{n:'queso',p:320,e:'🧀'},{n:'huevos',p:210,e:'🥚'},{n:'zumo',p:130,e:'🧃'},{n:'yogur',p:95,e:'🥛'},{n:'tomate',p:55,e:'🍅'},{n:'helado',p:230,e:'🍦'},{n:'naranja',p:75,e:'🍊'}];
+var SHOP_ITEMS=[{n:'manzana',p:60,e:'🍎'},{n:'pan',p:120,e:'🥖'},{n:'leche',p:110,e:'🥛'},{n:'plátano',p:50,e:'🍌'},{n:'chocolate',p:250,e:'🍫'},{n:'agua',p:70,e:'💧'},{n:'galletas',p:180,e:'🍪'},{n:'queso',p:320,e:'🧀'},{n:'huevos',p:210,e:'🥚'},{n:'zumo',p:130,e:'🧃'},{n:'yogur',p:90,e:'🥛'},{n:'tomate',p:60,e:'🍅'},{n:'helado',p:230,e:'🍦'},{n:'naranja',p:80,e:'🍊'},{n:'cereales',p:290,e:'🥣'},{n:'pasta',p:140,e:'🍝'},{n:'arroz',p:160,e:'🍚'},{n:'fresas',p:220,e:'🍓'},{n:'pizza',p:350,e:'🍕'},{n:'magdalenas',p:170,e:'🧁'}];
 function genPagar(level){ var k=level==='facil'?2:level==='medio'?3:4; var pool=shuffle(SHOP_ITEMS.slice()).slice(0,k); var total=0,desc=[];
   for(var i=0;i<pool.length;i++){ total+=pool[i].p; desc.push(pool[i].n+' ('+eurStr(pool[i].p)+')'); }
   var correct=eurStr(total), opts=[correct], g=0, offs=[5,10,20,50,-5,-10,-20,-50];
@@ -464,37 +472,45 @@ function genVuelta(level){ var bill=level==='facil'?500:level==='medio'?1000:200
 
 /* ===== TIENDA (simulador) ===== */
 var SHOP=null;
-function barcodeSVG(){ var bars='',x=2,i; for(i=0;i<22;i++){ var w=pick([1,1,2,2,3]); bars+='<rect x="'+x+'" y="2" width="'+w+'" height="20" fill="#23263d"/>'; x+=w+pick([1,2]); } return '<svg viewBox="0 0 '+x+' 24" preserveAspectRatio="none" class="barcode">'+bars+'</svg>'; }
-function shopCatalog(){ return SHOP_ITEMS.slice(0,9); }
-function cartTotal(){ var t=0,c=shopCatalog(); for(var i=0;i<SHOP.cart.length;i++) t+=c[SHOP.cart[i]].p; return t; }
-function shopStart(){ SHOP={cart:[],phase:'shopping'}; shopRender(); window.scrollTo(0,0); }
-function shopRender(){ var cat=shopCatalog(), prods='', i;
-  for(i=0;i<cat.length;i++){ var it=cat[i]; prods+='<div class="prod block" onclick="shopAdd('+i+')"><div class="pemoji">'+it.e+'</div>'+barcodeSVG()+'<div class="pname">'+it.n+'</div><div class="pprice">'+eurStr(it.p)+'</div></div>'; }
-  var ticket=''; if(SHOP.cart.length){ for(i=0;i<SHOP.cart.length;i++){ var c=cat[SHOP.cart[i]]; ticket+='<div class="trow"><span>'+c.e+' '+c.n+'</span><span>'+eurStr(c.p)+'</span></div>'; } } else ticket='<div class="tempty">Toca un producto para escanearlo…</div>';
-  var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">CAJA ÓrbitaKidx</div><div class="lcd">'+eurStr(cartTotal())+'</div><div class="ticket">'+ticket+'</div><div class="reg-btns"><div class="btn ghost sm" onclick="shopRemove()">Quitar</div><div class="btn green" onclick="shopCharge()">Cobrar ➜</div></div></div>'
-   +'<div class="section-title">PRODUCTOS</div><div class="shop-grid">'+prods+'</div>';
+var SHOP_DENOMS=[2000,1000,500,200,100,50,20,10];
+function barcodeSVG(seed){ var bars='',x=0,i,r=(seed||1);
+  function rr(){ r=(r*9301+49297)%233280; return r/233280; }
+  for(i=0;i<26;i++){ var w=1+Math.floor(rr()*3); bars+='<rect x="'+x+'" y="0" width="'+w+'" height="24" fill="#23263d"/>'; x+=w+1+Math.floor(rr()*2); }
+  return '<svg viewBox="0 0 '+x+' 24" preserveAspectRatio="none" class="barcode">'+bars+'</svg>'; }
+function basketTotal(){ var t=0,i; for(i=0;i<SHOP.basket.length;i++) t+=SHOP.basket[i].p; return t; }
+function shopScannedCount(){ var c=0,i; for(i=0;i<SHOP.basket.length;i++) if(SHOP.basket[i].scanned) c++; return c; }
+function shopScannedTotal(){ var t=0,i; for(i=0;i<SHOP.basket.length;i++) if(SHOP.basket[i].scanned) t+=SHOP.basket[i].p; return t; }
+function shopStart(){ var n=rnd(3,6), b=[], pool=shuffle(SHOP_ITEMS.slice()), i; for(i=0;i<n;i++){ var it=pool[i%pool.length]; b.push({n:it.n,p:it.p,e:it.e,bc:rnd(1,99999),scanned:false}); } SHOP={phase:'scan',basket:b}; shopRenderScan(); window.scrollTo(0,0); }
+function shopRenderScan(){ var prods='',i; for(i=0;i<SHOP.basket.length;i++){ var it=SHOP.basket[i];
+    prods+='<div class="prod block'+(it.scanned?' scanned':'')+'" onclick="shopScan('+i+')"><div class="pemoji">'+it.e+'</div><div class="pname">'+it.n+'</div><div class="pprice">'+eurStr(it.p)+'</div>'+barcodeSVG(it.bc)+(it.scanned?'<div class="scanmark">✓</div>':'')+'</div>'; }
+  var done=shopScannedCount(), n=SHOP.basket.length;
+  var btn = done===n ? '<div class="btn green" onclick="shopToPay()">Cobrar ➜</div>' : '<div class="btn ghost sm" style="opacity:.55">Escanea todo ('+done+'/'+n+')</div>';
+  var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">CAJA ÓrbitaKidx · escaneados '+done+'/'+n+'</div><div class="lcd">'+eurStr(shopScannedTotal())+'</div><div class="reg-btns">'+btn+'</div></div>'
+   +'<p class="sub" style="text-align:center;margin:2px 0 8px">Toca el código de barras de cada producto.</p>'
+   +'<div class="shop-grid">'+prods+'</div>';
   $("screen").innerHTML=html; }
-function shopAdd(i){ if(!SHOP||SHOP.phase!=='shopping') return; SHOP.cart.push(i); sfx('tap'); shopRender(); }
-function shopRemove(){ if(!SHOP||!SHOP.cart.length) return; SHOP.cart.pop(); sfx('tap'); shopRender(); }
-function shopCharge(){ if(!SHOP||!SHOP.cart.length) return; var total=cartTotal(); var bills=[500,1000,2000,5000,10000], bill=null;
-  for(var i=0;i<bills.length;i++){ if(bills[i]>=total){ bill=bills[i]; break; } } if(bill===null) bill=Math.ceil(total/1000)*1000;
-  var change=bill-total; SHOP.phase='paying'; SHOP.bill=bill; SHOP.change=change;
-  var opts=[eurStr(change)], g=0, offs=[10,20,50,100,-10,-20,-50,-100,5,-5];
-  while(opts.length<3&&g++<90){ var d=change+pick(offs); if(d<0||d>bill) continue; var t=eurStr(d); if(opts.indexOf(t)<0) opts.push(t); }
-  shuffle(opts); SHOP.opts=opts; shopRenderPay(); }
-function shopRenderPay(){ var opts='',i; for(i=0;i<SHOP.opts.length;i++) opts+='<div class="opt-btn" id="sopt'+i+'" onclick="shopAnswerChange('+i+')">'+SHOP.opts[i]+'</div>';
-  var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">CAJA ÓrbitaKidx</div><div class="lcd">'+eurStr(cartTotal())+'</div></div>'
-   +'<div class="qcard block" id="qcard"><div class="q-text">El cliente paga con un billete de <b>'+eurStr(SHOP.bill)+'</b>.<br>¿Cuánto le devuelves?</div><div class="opts">'+opts+'</div><div class="feedback" id="fb"></div></div>';
-  $("screen").innerHTML=html; window.scrollTo(0,0); }
-function shopAnswerChange(i){ if(!SHOP||SHOP.phase!=='paying') return; SHOP.phase='done'; var correct=eurStr(SHOP.change), ok=(SHOP.opts[i]===correct), fb=$("fb"), k;
-  for(k=0;k<SHOP.opts.length;k++){ var b=$("sopt"+k); if(!b) continue; b.style.pointerEvents='none'; if(SHOP.opts[k]===correct) b.classList.add('ok'); else if(k===i) b.classList.add('bad'); else b.classList.add('dim'); }
-  DATA.stats.totalAnswered++;
-  if(ok){ DATA.stats.totalCorrect++; DATA.stats.tienda.correct++; DATA.stats.ventas=(DATA.stats.ventas||0)+1;
-    var hoy=new Date().toISOString().slice(0,10); if(DATA.stats.lastDay!==hoy){ DATA.stats.days=(DATA.stats.days||0)+1; DATA.stats.lastDay=hoy; DATA.stats.todayCount=1; } else { DATA.stats.todayCount=(DATA.stats.todayCount||0)+1; } DATA.stats.sessions=(DATA.stats.sessions||0)+1;
-    fb.className='feedback ok'; fb.textContent='¡Venta hecha! 🛒'; sfx('win'); confettiBurst(); saveData(); checkAchievements();
-    $("qcard").innerHTML += '<div style="margin-top:14px"><div class="btn green" onclick="shopStart()">Siguiente cliente ➜</div></div>';
-  } else { fb.className='feedback no'; fb.innerHTML='La vuelta correcta era <b>'+correct+'</b>'; sfx('bad'); saveData();
-    $("qcard").innerHTML += '<div style="margin-top:14px"><div class="btn red" onclick="shopStart()">Otro cliente ➜</div></div>'; } }
+function shopScan(i){ if(!SHOP||SHOP.phase!=='scan'||SHOP.basket[i].scanned) return; SHOP.basket[i].scanned=true; sfx('scan'); shopRenderScan(); }
+function shopToPay(){ var total=basketTotal(), bills=[500,1000,2000,5000], bill=null,i; for(i=0;i<bills.length;i++){ if(bills[i]>=total){ bill=bills[i]; break; } } if(bill===null) bill=Math.ceil(total/1000)*1000;
+  SHOP.phase='pay'; SHOP.total=total; SHOP.bill=bill; SHOP.change=bill-total; SHOP.given=[]; shopRenderPay(); window.scrollTo(0,0); }
+function givenSum(){ var t=0,i; for(i=0;i<SHOP.given.length;i++) t+=SHOP.given[i]; return t; }
+function shopRenderPay(){ var i, denoms='', tray='';
+  for(i=0;i<SHOP_DENOMS.length;i++) denoms+='<div class="denom" onclick="shopGive('+SHOP_DENOMS[i]+')">'+pieceSVG(SHOP_DENOMS[i])+'</div>';
+  if(SHOP.change===0){ $("screen").innerHTML=backBar('La tienda')+'<div class="register block"><div class="reg-top">A pagar</div><div class="lcd">'+eurStr(SHOP.total)+'</div></div><div class="qcard block" id="qcard"><div class="q-text">El cliente paga justo con '+eurStr(SHOP.bill)+'. ¡No hay que dar cambio!</div><div style="margin-top:12px;text-align:center"><div class="btn green" onclick="shopDeliver()">Cobrar ✓</div></div><div class="feedback" id="fb"></div></div>'; return; }
+  if(SHOP.given.length){ for(i=0;i<SHOP.given.length;i++) tray+='<span class="gv">'+pieceSVG(SHOP.given[i])+'</span>'; } else tray='<span class="tempty">Toca monedas y billetes para dar la vuelta…</span>';
+  var sum=givenSum();
+  var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">Compra '+eurStr(SHOP.total)+' · el cliente paga con '+eurStr(SHOP.bill)+'</div><div class="pay-target">Devuelve <b>'+eurStr(SHOP.change)+'</b></div></div>'
+   +'<div class="qcard block" id="qcard"><div class="change-tray"><div class="ct-lbl">Le das: <b>'+eurStr(sum)+'</b></div><div class="ct-pieces">'+tray+'</div></div>'
+   +'<div class="denoms">'+denoms+'</div>'
+   +'<div class="reg-btns" style="margin-top:10px"><div class="btn ghost sm" onclick="shopUndo()">Quitar</div><div class="btn green" onclick="shopDeliver()">Entregar ➜</div></div><div class="feedback" id="fb"></div></div>';
+  $("screen").innerHTML=html; }
+function shopGive(c){ if(!SHOP||SHOP.phase!=='pay') return; SHOP.given.push(c); sfx('tap'); shopRenderPay(); }
+function shopUndo(){ if(!SHOP||!SHOP.given.length) return; SHOP.given.pop(); sfx('tap'); shopRenderPay(); }
+function shopDeliver(){ if(!SHOP||SHOP.phase!=='pay') return; var sum=givenSum(), fb;
+  if(SHOP.change!==0 && sum!==SHOP.change){ shopRenderPay(); fb=$("fb"); if(fb){ fb.className='feedback no'; fb.innerHTML=(sum<SHOP.change?('Faltan <b>'+eurStr(SHOP.change-sum)+'</b>'):('Te has pasado <b>'+eurStr(sum-SHOP.change)+'</b>')); } sfx('bad'); return; }
+  SHOP.phase='done'; DATA.stats.totalAnswered++; DATA.stats.totalCorrect++; DATA.stats.tienda.correct++; DATA.stats.ventas=(DATA.stats.ventas||0)+1;
+  var hoy=new Date().toISOString().slice(0,10); if(DATA.stats.lastDay!==hoy){ DATA.stats.days=(DATA.stats.days||0)+1; DATA.stats.lastDay=hoy; DATA.stats.todayCount=1; } else { DATA.stats.todayCount=(DATA.stats.todayCount||0)+1; } DATA.stats.sessions=(DATA.stats.sessions||0)+1;
+  sfx('win'); confettiBurst(); saveData(); checkAchievements();
+  $("screen").innerHTML=backBar('La tienda')+'<div class="result-card block"><div class="big" style="color:var(--green)">¡Venta hecha! 🛒</div><div class="result-msg">'+(SHOP.change>0?('Vuelta: '+eurStr(SHOP.change)):'Pago exacto')+'</div><div style="font-weight:800;margin-top:6px">Ventas: '+(DATA.stats.ventas)+'</div><div class="result-actions" style="margin-top:18px"><div class="btn green" onclick="shopStart()">Siguiente cliente ➜</div><div class="btn ghost" onclick="goHome()">Inicio</div></div></div>'; window.scrollTo(0,0); }
 
 /* ===== MOTOR ===== */
 /* --- ESTUDIO: dinero --- */
