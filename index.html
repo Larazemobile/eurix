@@ -472,7 +472,7 @@ function genVuelta(level){ var bill=level==='facil'?500:level==='medio'?1000:200
 
 /* ===== TIENDA (simulador) ===== */
 var SHOP=null;
-var SHOP_DENOMS=[2000,1000,500,200,100,50,20,10];
+var SHOP_DENOMS=[5000,2000,1000,500,200,100,50,20,10,5,2,1];
 function barcodeSVG(seed){ var bars='',x=0,i,r=(seed||1);
   function rr(){ r=(r*9301+49297)%233280; return r/233280; }
   for(i=0;i<26;i++){ var w=1+Math.floor(rr()*3); bars+='<rect x="'+x+'" y="0" width="'+w+'" height="24" fill="#23263d"/>'; x+=w+1+Math.floor(rr()*2); }
