@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Eurix — ÓrbitaKidx</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='20' fill='%233aa0ff' stroke='%2315172a' stroke-width='3'/><circle cx='17' cy='17' r='6' fill='%2346c66e'/><circle cx='31' cy='29' r='7' fill='%2346c66e'/><circle cx='17' cy='32' r='4' fill='%2346c66e'/><ellipse cx='17' cy='15' rx='5' ry='3' fill='%23ffffff' opacity='0.5'/></svg>">
-<meta name="theme-color" content="#8fc1ff">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='20' fill='%2336c991' stroke='%2315172a' stroke-width='3'/><circle cx='17' cy='17' r='6' fill='%23ffd45f'/><circle cx='31' cy='29' r='7' fill='%23ffd45f'/><circle cx='17' cy='32' r='4' fill='%23ffd45f'/><ellipse cx='17' cy='15' rx='5' ry='3' fill='%23ffffff' opacity='0.5'/></svg>">
+<meta name="theme-color" content="#39b98a">
 <meta name="apple-mobile-web-app-title" content="Eurix">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
 html,body{height:100%;}
 body{
   margin:0; font-family:var(--body); font-weight:500; color:var(--ink);
-  background: linear-gradient(170deg, #8fc1ff 0%, #aec2ff 45%, #d6c9f6 100%);
+  background: linear-gradient(170deg, #5fd3ab 0%, #a6e5c9 48%, #f4dfa4 100%);
   background-attachment:fixed;
   min-height:100%;
   -webkit-font-smoothing:antialiased;
@@ -313,6 +313,11 @@ h2.wtitle b{color:var(--gold);}
 .change-tray{background:var(--panel-2); border:3px solid var(--line); border-radius:12px; padding:10px; text-align:center; min-height:50px; margin-bottom:8px;}
 .ct-lbl{font-weight:800; margin-bottom:4px;} .ct-pieces{display:flex; flex-wrap:wrap; gap:6px; justify-content:center;}
 .pay-target{font-weight:900; font-size:20px; margin-top:4px;}
+.receipt{max-width:360px; margin:16px auto 4px; background:#fffdf4; border:3px dashed #9d8b62; border-radius:8px; padding:12px; text-align:left;}
+.receipt-title{text-align:center; font-family:var(--pixel); font-weight:700; margin-bottom:8px;}
+.receipt-row{display:flex; justify-content:space-between; gap:12px; padding:3px 0; font-weight:700;}
+.receipt-total{border-top:2px solid #c8b889; margin-top:5px; padding-top:7px;}
+.why{font-weight:700; margin-top:7px; line-height:1.45;}
 .study-pieces{display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:8px 0;}
 .study-piece{text-align:center; width:76px;}
 .sp-name{font-weight:700; font-size:11px; color:var(--ink-soft); margin-top:3px;}
@@ -335,10 +340,10 @@ h2.wtitle b{color:var(--gold);}
   <div class="topbar">
     <div class="logo" onclick="goHome()">
       <svg class="cube" viewBox="0 0 48 48">
-        <defs><radialGradient id="globeLogo" cx="38%" cy="30%" r="78%"><stop offset="0" stop-color="#a9e4ff"/><stop offset="45%" stop-color="#3aa0ff"/><stop offset="100%" stop-color="#1f56c8"/></radialGradient></defs>
+        <defs><radialGradient id="globeLogo" cx="38%" cy="30%" r="78%"><stop offset="0" stop-color="#e7ffd6"/><stop offset="45%" stop-color="#36c991"/><stop offset="100%" stop-color="#08775f"/></radialGradient></defs>
         <circle cx="24" cy="24" r="20" fill="url(#globeLogo)" stroke="#15172a" stroke-width="3"/>
-        <path d="M13 16 q4 -3 8 -1 q3 2 1 5 q-3 2 -6 1 q-4 -2 -3 -5z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/>
-        <path d="M27 26 q6 -1 7 4 q1 4 -3 6 q-5 1 -7 -3 q-1 -4 3 -7z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/>
+        <path d="M13 16 q4 -3 8 -1 q3 2 1 5 q-3 2 -6 1 q-4 -2 -3 -5z" fill="#ffd45f" stroke="#d39a20" stroke-width="1"/>
+        <path d="M27 26 q6 -1 7 4 q1 4 -3 6 q-5 1 -7 -3 q-1 -4 3 -7z" fill="#ffd45f" stroke="#d39a20" stroke-width="1"/>
         <ellipse cx="17" cy="15" rx="7" ry="4.4" fill="#ffffff" opacity="0.42" transform="rotate(-25 17 15)"/>
       </svg>
       <h1>Euri<b>x</b></h1>
@@ -354,7 +359,7 @@ h2.wtitle b{color:var(--gold);}
     </div>
   </div>
   <div id="screen"></div>
-  <div class="footer-note"><span style="display:inline-block;background:#fff;border:2px solid #e7e9f3;border-radius:999px;padding:5px 14px;color:#3a3f63;font-size:12px">🪐 Descubre el resto del <b>universo ÓrbitaKidx</b> · ¡sigue jugando y aprendiendo!</span><br><br>Una app de <b>ÓrbitaKidx</b><br><span style="font-size:11px">¿Tienes algo que decirnos? Escríbenos a <a href="mailto:orbitakidx@gmail.com" style="color:var(--blue-d);font-weight:700">orbitakidx@gmail.com</a></span></div>
+  <div class="footer-note"><span style="display:inline-block;background:#fff;border:2px solid #e7e9f3;border-radius:999px;padding:5px 14px;color:#3a3f63;font-size:12px">🪐 Descubre el resto del <b>universo ÓrbitaKidx</b> · ¡sigue jugando y aprendiendo!</span><br><br>Una app de <b>ÓrbitaKidx</b><br><span style="font-size:11px">¿Tienes algo que decirnos? Escríbenos a <a href="mailto:orbitakidx@gmail.com" style="color:var(--blue-d);font-weight:700">orbitakidx@gmail.com</a> · <a href="privacy.html" style="color:var(--blue-d);font-weight:700">Privacidad</a></span></div>
 </div>
 <div id="modalHost"></div>
 <div class="toast-wrap" id="toastHost"></div>
@@ -422,7 +427,7 @@ function sfx(type){ if(!soundOn()) return; try{ var AC=window.AudioContext||wind
   else if(type==='scan'){ seq=[[2050,0,.045],[2600,.05,.06]]; wave='square'; }
   else { seq=[[600,0,.08]]; }
   for(var i=0;i<seq.length;i++){ var n=seq[i], o=ctx.createOscillator(), g=ctx.createGain(); o.type=wave; o.frequency.value=n[0]; o.connect(g); g.connect(ctx.destination); var t0=ctx.currentTime+n[1]; g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.22,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+n[2]); o.start(t0); o.stop(t0+n[2]+0.03); } }catch(e){} }
-function bigGlobeSVG(){ return '<svg viewBox="0 0 48 48" style="width:100%;height:100%"><defs><radialGradient id="wg" cx="38%" cy="30%" r="78%"><stop offset="0" stop-color="#a9e4ff"/><stop offset="45%" stop-color="#3aa0ff"/><stop offset="100%" stop-color="#1f56c8"/></radialGradient></defs><circle cx="24" cy="24" r="20" fill="url(#wg)" stroke="#15172a" stroke-width="3"/><path d="M13 16 q4 -3 8 -1 q3 2 1 5 q-3 2 -6 1 q-4 -2 -3 -5z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/><path d="M27 26 q6 -1 7 4 q1 4 -3 6 q-5 1 -7 -3 q-1 -4 3 -7z" fill="#46c66e" stroke="#2c9a4f" stroke-width="1"/><ellipse cx="17" cy="15" rx="7" ry="4.4" fill="#ffffff" opacity="0.42" transform="rotate(-25 17 15)"/></svg>'; }
+function bigGlobeSVG(){ return '<svg viewBox="0 0 48 48" style="width:100%;height:100%"><defs><radialGradient id="wg" cx="38%" cy="30%" r="78%"><stop offset="0" stop-color="#e7ffd6"/><stop offset="45%" stop-color="#36c991"/><stop offset="100%" stop-color="#08775f"/></radialGradient></defs><circle cx="24" cy="24" r="20" fill="url(#wg)" stroke="#15172a" stroke-width="3"/><path d="M13 16 q4 -3 8 -1 q3 2 1 5 q-3 2 -6 1 q-4 -2 -3 -5z" fill="#ffd45f" stroke="#d39a20" stroke-width="1"/><path d="M27 26 q6 -1 7 4 q1 4 -3 6 q-5 1 -7 -3 q-1 -4 3 -7z" fill="#ffd45f" stroke="#d39a20" stroke-width="1"/><ellipse cx="17" cy="15" rx="7" ry="4.4" fill="#ffffff" opacity="0.42" transform="rotate(-25 17 15)"/></svg>'; }
 
 /* medallas */
 var ACHIEVEMENTS=[
@@ -455,20 +460,26 @@ function pieceSVG(c){
   return '<svg viewBox="0 0 44 44" class="coin"><circle cx="22" cy="22" r="19" fill="'+col2+'" stroke="'+ring+'" stroke-width="3"/><circle cx="22" cy="22" r="14" fill="none" stroke="'+ring+'" stroke-width="1.2" opacity="0.6"/><text x="22" y="27" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="'+(c>=100?13:12)+'" fill="#5a4317">'+lbl2+'</text></svg>'; }
 function moneyRow(p){ var h=''; for(var i=0;i<p.length;i++) h+=pieceSVG(p[i]); return h; }
 function sumP(p){ var t=0; for(var i=0;i<p.length;i++) t+=p[i]; return t; }
+function moneyOptions(correct,candidates){ var vals=[correct],i,g=0,fallback=[5,-5,10,-10,20,-20,50,-50,100,-100,200,-200];
+  for(i=0;i<candidates.length&&vals.length<3;i++){ if(candidates[i]>0&&vals.indexOf(candidates[i])<0) vals.push(candidates[i]); }
+  while(vals.length<3&&g<fallback.length){ var v=correct+fallback[g++]; if(v>0&&vals.indexOf(v)<0) vals.push(v); }
+  var opts=[]; for(i=0;i<vals.length;i++) opts.push(eurStr(vals[i])); shuffle(opts); return {opts:opts,a:opts.indexOf(eurStr(correct))}; }
+function moneySumText(values){ var out=[]; for(var i=0;i<values.length;i++) out.push(eurStr(values[i])); return out.join(' + '); }
 function genMoney(level){ var d=level==='facil'?[10,20,50,100]:level==='medio'?[5,10,20,50,100,200]:[10,20,50,100,200,500]; var k=level==='facil'?rnd(2,4):level==='medio'?rnd(3,5):rnd(3,6); var p=[]; for(var i=0;i<k;i++) p.push(pick(d)); return p; }
-function genContar(level){ var p=genMoney(level), total=sumP(p), correct=eurStr(total), opts=[correct], g=0, offs=[5,10,20,50,100,-5,-10,-20,-50,-100];
-  while(opts.length<3&&g++<70){ var d=total+pick(offs); if(d<=0) continue; var t=eurStr(d); if(opts.indexOf(t)<0) opts.push(t); }
-  shuffle(opts); return {money:p,q:'¿Cuánto dinero hay?',opts:opts,a:opts.indexOf(correct),mode:'contar'}; }
+function genContar(level){ var p=genMoney(level), total=sumP(p), candidates=[],i;
+  for(i=0;i<p.length;i++){ candidates.push(total-p[i]); candidates.push(total+p[i]); }
+  var choices=moneyOptions(total,candidates);
+  return {money:p,q:'¿Cuánto dinero hay?',opts:choices.opts,a:choices.a,mode:'contar',explain:'Sumamos cada moneda y billete: '+moneySumText(p)+' = '+eurStr(total)+'.'}; }
 var SHOP_ITEMS=[{n:'manzana',p:60,e:'🍎'},{n:'pan',p:120,e:'🥖'},{n:'leche',p:110,e:'🥛'},{n:'plátano',p:50,e:'🍌'},{n:'chocolate',p:250,e:'🍫'},{n:'agua',p:70,e:'💧'},{n:'galletas',p:180,e:'🍪'},{n:'queso',p:320,e:'🧀'},{n:'huevos',p:210,e:'🥚'},{n:'zumo',p:130,e:'🧃'},{n:'yogur',p:90,e:'🥛'},{n:'tomate',p:60,e:'🍅'},{n:'helado',p:230,e:'🍦'},{n:'naranja',p:80,e:'🍊'},{n:'cereales',p:290,e:'🥣'},{n:'pasta',p:140,e:'🍝'},{n:'arroz',p:160,e:'🍚'},{n:'fresas',p:220,e:'🍓'},{n:'pizza',p:350,e:'🍕'},{n:'magdalenas',p:170,e:'🧁'}];
-function genPagar(level){ var k=level==='facil'?2:level==='medio'?3:4; var pool=shuffle(SHOP_ITEMS.slice()).slice(0,k); var total=0,desc=[];
-  for(var i=0;i<pool.length;i++){ total+=pool[i].p; desc.push(pool[i].n+' ('+eurStr(pool[i].p)+')'); }
-  var correct=eurStr(total), opts=[correct], g=0, offs=[5,10,20,50,-5,-10,-20,-50];
-  while(opts.length<3&&g++<70){ var d=total+pick(offs); if(d<=0) continue; var t=eurStr(d); if(opts.indexOf(t)<0) opts.push(t); }
-  shuffle(opts); return {q:'Compras: '+desc.join(' y ')+'. ¿Cuánto es en total?',opts:opts,a:opts.indexOf(correct),mode:'pagar'}; }
+function genPagar(level){ var k=level==='facil'?2:level==='medio'?3:4; var pool=shuffle(SHOP_ITEMS.slice()).slice(0,k); var total=0,desc=[],prices=[],candidates=[];
+  for(var i=0;i<pool.length;i++){ total+=pool[i].p; prices.push(pool[i].p); desc.push(pool[i].n+' ('+eurStr(pool[i].p)+')'); }
+  for(i=0;i<prices.length;i++){ candidates.push(total-prices[i]); candidates.push(total+prices[i]); }
+  var choices=moneyOptions(total,candidates);
+  return {q:'Compras: '+desc.join(' y ')+'. ¿Cuánto es en total?',opts:choices.opts,a:choices.a,mode:'pagar',explain:'Sumamos los precios: '+moneySumText(prices)+' = '+eurStr(total)+'.'}; }
 function genVuelta(level){ var bill=level==='facil'?500:level==='medio'?1000:2000, step=level==='facil'?50:level==='medio'?10:5;
-  var maxU=Math.floor((bill-step)/step), price=rnd(1,maxU)*step, change=bill-price, correct=eurStr(change), opts=[correct], g=0, offs=[step,2*step,-step,-2*step,50,-50,100,-100];
-  while(opts.length<3&&g++<90){ var d=change+pick(offs); if(d<=0||d>=bill) continue; var t=eurStr(d); if(opts.indexOf(t)<0) opts.push(t); }
-  shuffle(opts); return {q:'Cuesta '+eurStr(price)+' y pagas con un billete de '+eurStr(bill)+'. ¿Cuánto te devuelven?',opts:opts,a:opts.indexOf(correct),mode:'vuelta'}; }
+  var maxU=Math.floor((bill-step)/step), price=rnd(1,maxU)*step, change=bill-price;
+  var choices=moneyOptions(change,[price,bill,change+step,change-step,change+2*step,change-2*step]);
+  return {q:'Cuesta '+eurStr(price)+' y pagas con un billete de '+eurStr(bill)+'. ¿Cuánto te devuelven?',opts:choices.opts,a:choices.a,mode:'vuelta',explain:'Restamos lo que cuesta al dinero entregado: '+eurStr(bill)+' − '+eurStr(price)+' = '+eurStr(change)+'.'}; }
 
 /* ===== TIENDA (simulador) ===== */
 var SHOP=null;
@@ -486,7 +497,7 @@ function shopRenderScan(){ var prods='',i; for(i=0;i<SHOP.basket.length;i++){ va
   var done=shopScannedCount(), n=SHOP.basket.length;
   var btn = done===n ? '<div class="btn green" onclick="shopToPay()">Cobrar ➜</div>' : '<div class="btn ghost sm" style="opacity:.55">Escanea todo ('+done+'/'+n+')</div>';
   var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">CAJA ÓrbitaKidx · escaneados '+done+'/'+n+'</div><div class="lcd">'+eurStr(shopScannedTotal())+'</div><div class="reg-btns">'+btn+'</div></div>'
-   +'<p class="sub" style="text-align:center;margin:2px 0 8px">Toca el código de barras de cada producto.</p>'
+   +'<p class="sub" style="text-align:center;margin:2px 0 8px">Toca cada producto para escanearlo. La caja sumará los precios.</p>'
    +'<div class="shop-grid">'+prods+'</div>';
   $("screen").innerHTML=html; }
 function shopScan(i){ if(!SHOP||SHOP.phase!=='scan'||SHOP.basket[i].scanned) return; SHOP.basket[i].scanned=true; sfx('scan'); shopRenderScan(); }
@@ -494,23 +505,26 @@ function shopToPay(){ var total=basketTotal(), bills=[500,1000,2000,5000], bill=
   SHOP.phase='pay'; SHOP.total=total; SHOP.bill=bill; SHOP.change=bill-total; SHOP.given=[]; shopRenderPay(); window.scrollTo(0,0); }
 function givenSum(){ var t=0,i; for(i=0;i<SHOP.given.length;i++) t+=SHOP.given[i]; return t; }
 function shopRenderPay(){ var i, denoms='', tray='';
-  for(i=0;i<SHOP_DENOMS.length;i++) denoms+='<div class="denom" onclick="shopGive('+SHOP_DENOMS[i]+')">'+pieceSVG(SHOP_DENOMS[i])+'</div>';
+  for(i=0;i<SHOP_DENOMS.length;i++){ if(SHOP_DENOMS[i]<=SHOP.change) denoms+='<div class="denom" onclick="shopGive('+SHOP_DENOMS[i]+')">'+pieceSVG(SHOP_DENOMS[i])+'</div>'; }
   if(SHOP.change===0){ $("screen").innerHTML=backBar('La tienda')+'<div class="register block"><div class="reg-top">A pagar</div><div class="lcd">'+eurStr(SHOP.total)+'</div></div><div class="qcard block" id="qcard"><div class="q-text">El cliente paga justo con '+eurStr(SHOP.bill)+'. ¡No hay que dar cambio!</div><div style="margin-top:12px;text-align:center"><div class="btn green" onclick="shopDeliver()">Cobrar ✓</div></div><div class="feedback" id="fb"></div></div>'; return; }
   if(SHOP.given.length){ for(i=0;i<SHOP.given.length;i++) tray+='<span class="gv">'+pieceSVG(SHOP.given[i])+'</span>'; } else tray='<span class="tempty">Toca monedas y billetes para dar la vuelta…</span>';
   var sum=givenSum();
   var html=backBar('La tienda')+'<div class="register block"><div class="reg-top">Compra '+eurStr(SHOP.total)+' · el cliente paga con '+eurStr(SHOP.bill)+'</div><div class="pay-target">Devuelve <b>'+eurStr(SHOP.change)+'</b></div></div>'
    +'<div class="qcard block" id="qcard"><div class="change-tray"><div class="ct-lbl">Le das: <b>'+eurStr(sum)+'</b></div><div class="ct-pieces">'+tray+'</div></div>'
-   +'<div class="denoms">'+denoms+'</div>'
-   +'<div class="reg-btns" style="margin-top:10px"><div class="btn ghost sm" onclick="shopUndo()">Quitar</div><div class="btn green" onclick="shopDeliver()">Entregar ➜</div></div><div class="feedback" id="fb"></div></div>';
+   +'<p class="sub" style="text-align:center;margin:8px 0 2px">Elige monedas y billetes hasta completar el cambio exacto.</p><div class="denoms">'+denoms+'</div>'
+   +'<div class="reg-btns" style="margin-top:10px"><div class="btn ghost sm" onclick="shopUndo()">Quitar última</div><div class="btn ghost sm" onclick="shopClear()">Vaciar</div><div class="btn green" onclick="shopDeliver()">Entregar ➜</div></div><div class="feedback" id="fb"></div></div>';
   $("screen").innerHTML=html; }
 function shopGive(c){ if(!SHOP||SHOP.phase!=='pay') return; SHOP.given.push(c); sfx('tap'); shopRenderPay(); }
 function shopUndo(){ if(!SHOP||!SHOP.given.length) return; SHOP.given.pop(); sfx('tap'); shopRenderPay(); }
+function shopClear(){ if(!SHOP||!SHOP.given.length) return; SHOP.given=[]; sfx('tap'); shopRenderPay(); }
+function shopReceipt(){ var rows='',i; for(i=0;i<SHOP.basket.length;i++){ rows+='<div class="receipt-row"><span>'+escapeHtml(SHOP.basket[i].n)+'</span><span>'+eurStr(SHOP.basket[i].p)+'</span></div>'; }
+  return '<div class="receipt"><div class="receipt-title">TICKET EURIX</div>'+rows+'<div class="receipt-row receipt-total"><span>Total</span><span>'+eurStr(SHOP.total)+'</span></div><div class="receipt-row"><span>Recibido</span><span>'+eurStr(SHOP.bill)+'</span></div><div class="receipt-row"><span>Cambio</span><span>'+eurStr(SHOP.change)+'</span></div></div>'; }
 function shopDeliver(){ if(!SHOP||SHOP.phase!=='pay') return; var sum=givenSum(), fb;
   if(SHOP.change!==0 && sum!==SHOP.change){ shopRenderPay(); fb=$("fb"); if(fb){ fb.className='feedback no'; fb.innerHTML=(sum<SHOP.change?('Faltan <b>'+eurStr(SHOP.change-sum)+'</b>'):('Te has pasado <b>'+eurStr(sum-SHOP.change)+'</b>')); } sfx('bad'); return; }
   SHOP.phase='done'; DATA.stats.totalAnswered++; DATA.stats.totalCorrect++; DATA.stats.tienda.correct++; DATA.stats.ventas=(DATA.stats.ventas||0)+1;
   var hoy=new Date().toISOString().slice(0,10); if(DATA.stats.lastDay!==hoy){ DATA.stats.days=(DATA.stats.days||0)+1; DATA.stats.lastDay=hoy; DATA.stats.todayCount=1; } else { DATA.stats.todayCount=(DATA.stats.todayCount||0)+1; } DATA.stats.sessions=(DATA.stats.sessions||0)+1;
   sfx('win'); confettiBurst(); saveData(); checkAchievements();
-  $("screen").innerHTML=backBar('La tienda')+'<div class="result-card block"><div class="big" style="color:var(--green)">¡Venta hecha! 🛒</div><div class="result-msg">'+(SHOP.change>0?('Vuelta: '+eurStr(SHOP.change)):'Pago exacto')+'</div><div style="font-weight:800;margin-top:6px">Ventas: '+(DATA.stats.ventas)+'</div><div class="result-actions" style="margin-top:18px"><div class="btn green" onclick="shopStart()">Siguiente cliente ➜</div><div class="btn ghost" onclick="goHome()">Inicio</div></div></div>'; window.scrollTo(0,0); }
+  $("screen").innerHTML=backBar('La tienda')+'<div class="result-card block"><div class="big" style="color:var(--green)">¡Venta hecha! 🛒</div><div class="result-msg">'+(SHOP.change>0?('Cambio entregado: '+eurStr(SHOP.change)):'Pago exacto')+'</div>'+shopReceipt()+'<div style="font-weight:800;margin-top:10px">Ventas: '+(DATA.stats.ventas)+'</div><div class="result-actions" style="margin-top:18px"><div class="btn green" onclick="shopStart()">Siguiente cliente ➜</div><div class="btn ghost" onclick="goHome()">Inicio</div></div></div>'; window.scrollTo(0,0); }
 
 /* ===== MOTOR ===== */
 /* --- ESTUDIO: dinero --- */
@@ -521,9 +535,9 @@ function studyMoney(){ var coins=[1,2,5,10,20,50,100,200], bills=[500,1000,2000,
   $("screen").innerHTML=backBar('Monedas y billetes')+'<div class="panel block"><h2>Monedas y billetes</h2><p class="sub">Estos son los euros que usamos. ¡Conócelos!</p><div style="font-weight:900;margin:6px 0 4px">Monedas</div><div class="study-pieces">'+cg+'</div><div style="font-weight:900;margin:14px 0 4px">Billetes</div><div class="study-pieces">'+bg+'</div></div>';
   window.scrollTo(0,0); }
 function studyPay(){ var rows=[
-   ['💶','Efectivo','Monedas y billetes que llevas en la mano. Si pagas de más, te dan la vuelta.'],
-   ['💳','Tarjeta','La acercas o la metes en la máquina y el dinero sale de tu banco. No te dan vuelta.'],
-   ['📱','Móvil o reloj','Pagas acercando el móvil o el reloj, igual que una tarjeta.'],
+   ['💶','Efectivo','Monedas y billetes. Si entregas más de lo que cuesta, recibes el cambio o la vuelta.'],
+   ['💳','Tarjeta','La acercas o la introduces en el terminal. El banco comprueba el pago y descuenta la cantidad de la cuenta asociada.'],
+   ['📱','Móvil o reloj','Puedes pagar acercándolo al terminal cuando tiene una tarjeta configurada.'],
    ['🧾','El ticket','El papel donde ves lo que has comprado y cuánto has pagado.'] ];
   var h='',i; for(i=0;i<rows.length;i++) h+='<div class="pay-item"><div class="pay-ic">'+rows[i][0]+'</div><div><b>'+rows[i][1]+'</b><br><span>'+rows[i][2]+'</span></div></div>';
   $("screen").innerHTML=backBar('Formas de pago')+'<div class="panel block"><h2>Formas de pago</h2><p class="sub">Hay varias maneras de pagar en una tienda.</p>'+h+'</div>'; window.scrollTo(0,0); }
@@ -540,10 +554,10 @@ function renderHome(){ var s=DATA.stats, medals=unlockedCount();
   var html='<div class="hero block"><div class="big-av">'+avatarSVG(DATA.avatar)+'</div><div class="htxt"><h2>¡Hola, '+escapeHtml(DATA.name||"jugador")+'!</h2><p>¿Listo para manejar el dinero? Elige un mundo.</p>'
    +'<div class="stat-row"><div class="stat">✅ <b>'+s.totalCorrect+'</b> aciertos</div><div class="stat">🔥 mejor racha <b>'+s.bestStreak+'</b></div><div class="stat">🏅 <b>'+medals+'</b>/'+ACHIEVEMENTS.length+' medallas</div></div></div><div class="today-hearts" title="Partidas jugadas hoy"><span class="th-lbl">Hoy</span>'+heartsHTML()+'</div></div>'
    +'<div class="section-title">ELIGE TU MUNDO</div><div class="grid">'
+   +modeCard("var(--pink)","cart","La tienda","¡Juega a cobrar!","shopStart()")
    +modeCard("var(--purple)","coin","Contar dinero","¿Cuánto hay?","selContar()")
    +modeCard("var(--green)","target","Sumar la compra","Precios y totales","selPagar()")
    +modeCard("var(--orange)","bolt","La vuelta","El cambio exacto","selVuelta()")
-   +modeCard("var(--pink)","cart","La tienda","¡Juega a la caja!","shopStart()")
    +modeCard("var(--teal)","coin","Monedas y billetes","Conócelos todos","studyMoney()")
    +modeCard("var(--red)","cart","Formas de pago","Aprende a pagar","studyPay()")
    +modeCard("var(--gold)","trophy","Examen","Pon a prueba lo aprendido","selExam()")
@@ -596,7 +610,7 @@ function answer(i){ if(!QUIZ||QUIZ.answered) return; var it=QUIZ.items[QUIZ.inde
   if(ok){ DATA.stats.totalCorrect++; QUIZ.correct++; QUIZ.streak++; if(QUIZ.streak>DATA.stats.bestStreak) DATA.stats.bestStreak=QUIZ.streak;
     var _m=it.mode||QUIZ.mode; if(DATA.stats[_m]&&typeof DATA.stats[_m].correct==='number') DATA.stats[_m].correct++;
     fb.className='feedback ok'; fb.textContent=pick(['¡Genial!','¡Correcto!','¡Muy bien!','¡Eres crack!']); sfx('ok'); saveData(); checkAchievements(); setTimeout(nextQ,800);
-  } else { QUIZ.streak=0; QUIZ.wrong.push(it); fb.className='feedback no'; fb.innerHTML='La correcta era <b>'+escapeHtml(it.opts[it.a])+'</b>'; sfx('bad'); saveData(); checkAchievements();
+  } else { QUIZ.streak=0; QUIZ.wrong.push(it); fb.className='feedback no'; fb.innerHTML='La correcta era <b>'+escapeHtml(it.opts[it.a])+'</b>'+(it.explain?'<div class="why">'+escapeHtml(it.explain)+'</div>':''); sfx('bad'); saveData(); checkAchievements();
     var c=$("qcard"); c.innerHTML += '<div style="margin-top:14px"><div class="btn red" onclick="nextQ()">Siguiente ➜</div></div>';
   }
 }
