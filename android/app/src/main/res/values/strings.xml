@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Eurix</string>
+    <string name="title_activity_main">Eurix</string>
+    <string name="package_name">com.orbitakidx.eurix</string>
+    <string name="custom_url_scheme">com.orbitakidx.eurix</string>
+</resources>

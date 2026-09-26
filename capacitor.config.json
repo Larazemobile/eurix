@@ -1,0 +1,14 @@
+{
+  "appId": "com.orbitakidx.eurix",
+  "appName": "Eurix",
+  "webDir": "www",
+  "backgroundColor": "#39b98a",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "backgroundColor": "#39b98a"
+  }
+}
