@@ -80,7 +80,7 @@ try {
     await rm(screenshot, { force: true });
     await runChrome([
       "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
-      "--force-device-scale-factor=1", "--window-size=500,1000", "--virtual-time-budget=1400",
+      "--force-device-scale-factor=1", "--window-size=540,960", "--virtual-time-budget=1400",
       `--user-data-dir=${profile}`, `--screenshot=${screenshot}`,
       pathToFileURL(page).href
     ], screenshot);
@@ -90,4 +90,4 @@ try {
   await rm(temp, { recursive: true, force: true });
 }
 
-console.log("Capturas de Google Play generadas en 500 × 1000");
+console.log("Capturas de Google Play generadas en 540 × 960 (9:16)");
