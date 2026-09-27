@@ -266,6 +266,9 @@ body{
 .footer-note{text-align:center; color:rgba(32,35,58,.6); font-weight:700; font-size:12px; margin-top:18px;}
 .topright{display:flex; align-items:center; gap:10px;}
 .sound-btn{width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:#fff; cursor:pointer; padding:0;}
+.course-chip{height:44px;min-width:50px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;padding:0 10px;font-weight:900;color:var(--green-d);}
+.course-note{background:#ecfff7;border:2px solid #b9ecd8;border-radius:14px;padding:12px;margin:12px 0 16px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.course-note span{font-size:13px;font-weight:700;color:var(--ink-soft);}
 .wintro{text-align:center; padding:6px 2px;}
 .wglobe{width:120px; height:120px; margin:6px auto 12px; animation:wfloat 3s ease-in-out infinite;}
 .wglobe.sm{width:72px; height:72px; margin:4px auto 8px;}
@@ -352,6 +355,7 @@ h2.wtitle b{color:var(--gold);}
       <h1>Euri<b>x</b></h1>
     </div>
     <div class="topright">
+      <div class="course-chip block" id="courseChip" onclick="chooseCourse(false)" title="Cambiar curso">3.º</div>
       <div class="sound-btn block" id="soundBtn" onclick="toggleSound()" title="Sonido"></div>
       <div class="profile-chip block" onclick="openProfile()">
         <div class="av" id="chipAv"></div>
@@ -370,7 +374,7 @@ h2.wtitle b{color:var(--gold);}
 <script>
 "use strict";
 var STORE_KEY="eurix_v1", memFallback=null;
-function defaultData(){ return {name:"",avatar:0,onboarded:false,prefs:{sound:true},
+function defaultData(){ return {name:"",avatar:0,grade:3,onboarded:false,prefs:{sound:true},
   stars:{contar:{},pagar:{},vuelta:{}},
   stats:{totalAnswered:0,totalCorrect:0,bestStreak:0,sessions:0,days:0,lastDay:"",todayCount:0,
     contar:{correct:0},pagar:{correct:0},vuelta:{correct:0},tienda:{correct:0},ventas:0,exams:{completed:0,perfect:0}},
@@ -383,6 +387,12 @@ function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 function $(id){ return document.getElementById(id); }
 function starStr(n){ var s=""; for(var i=0;i<3;i++) s+= i<n?"★":"☆"; return s; }
+function courseInfo(){ return [
+  {grade:1,short:"1.º",label:"1.º Primaria",level:"facil",focus:"reconocer monedas y pequeñas cantidades"},
+  {grade:2,short:"2.º",label:"2.º Primaria",level:"facil",focus:"sumar precios sencillos y pagar"},
+  {grade:3,short:"3.º",label:"3.º Primaria",level:"medio",focus:"compras, céntimos y cambio"},
+  {grade:4,short:"4.º",label:"4.º Primaria",level:"dificil",focus:"presupuestos y vueltas más precisas"}
+][Math.max(1,Math.min(4,DATA.grade||3))-1]; }
 function escapeHtml(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 
@@ -469,7 +479,7 @@ function moneyOptions(correct,candidates){ var vals=[correct],i,g=0,fallback=[5,
   while(vals.length<3&&g<fallback.length){ var v=correct+fallback[g++]; if(v>0&&vals.indexOf(v)<0) vals.push(v); }
   var opts=[]; for(i=0;i<vals.length;i++) opts.push(eurStr(vals[i])); shuffle(opts); return {opts:opts,a:opts.indexOf(eurStr(correct))}; }
 function moneySumText(values){ var out=[]; for(var i=0;i<values.length;i++) out.push(eurStr(values[i])); return out.join(' + '); }
-function genMoney(level){ var d=level==='facil'?[10,20,50,100]:level==='medio'?[5,10,20,50,100,200]:[10,20,50,100,200,500]; var k=level==='facil'?rnd(2,4):level==='medio'?rnd(3,5):rnd(3,6); var p=[]; for(var i=0;i<k;i++) p.push(pick(d)); return p; }
+function genMoney(level){ var first=(DATA.grade||3)===1&&level==='facil'; var d=first?[10,20,50]:level==='facil'?[10,20,50,100]:level==='medio'?[5,10,20,50,100,200]:[10,20,50,100,200,500]; var k=first?rnd(2,3):level==='facil'?rnd(2,4):level==='medio'?rnd(3,5):rnd(3,6); var p=[]; for(var i=0;i<k;i++) p.push(pick(d)); return p; }
 function genContar(level){ var p=genMoney(level), total=sumP(p), candidates=[],i;
   for(i=0;i<p.length;i++){ candidates.push(total-p[i]); candidates.push(total+p[i]); }
   var choices=moneyOptions(total,candidates);
@@ -480,7 +490,7 @@ function genPagar(level){ var k=level==='facil'?2:level==='medio'?3:4; var pool=
   for(i=0;i<prices.length;i++){ candidates.push(total-prices[i]); candidates.push(total+prices[i]); }
   var choices=moneyOptions(total,candidates);
   return {q:'Compras: '+desc.join(' y ')+'. ¿Cuánto es en total?',opts:choices.opts,a:choices.a,mode:'pagar',explain:'Sumamos los precios: '+moneySumText(prices)+' = '+eurStr(total)+'.'}; }
-function genVuelta(level){ var bill=level==='facil'?500:level==='medio'?1000:2000, step=level==='facil'?50:level==='medio'?10:5;
+function genVuelta(level){ var bill=(DATA.grade||3)===1&&level==='facil'?200:level==='facil'?500:level==='medio'?1000:2000, step=level==='facil'?50:level==='medio'?10:5;
   var maxU=Math.floor((bill-step)/step), price=rnd(1,maxU)*step, change=bill-price;
   var choices=moneyOptions(change,[price,bill,change+step,change-step,change+2*step,change-2*step]);
   return {q:'Cuesta '+eurStr(price)+' y pagas con un billete de '+eurStr(bill)+'. ¿Cuánto te devuelven?',opts:choices.opts,a:choices.a,mode:'vuelta',explain:'Restamos lo que cuesta al dinero entregado: '+eurStr(bill)+' − '+eurStr(price)+' = '+eurStr(change)+'.'}; }
@@ -495,7 +505,7 @@ function barcodeSVG(seed){ var bars='',x=0,i,r=(seed||1);
 function basketTotal(){ var t=0,i; for(i=0;i<SHOP.basket.length;i++) t+=SHOP.basket[i].p; return t; }
 function shopScannedCount(){ var c=0,i; for(i=0;i<SHOP.basket.length;i++) if(SHOP.basket[i].scanned) c++; return c; }
 function shopScannedTotal(){ var t=0,i; for(i=0;i<SHOP.basket.length;i++) if(SHOP.basket[i].scanned) t+=SHOP.basket[i].p; return t; }
-function shopStart(){ if(!OrbitakidxAccess.requireShop()) return; var n=rnd(3,6), b=[], pool=shuffle(SHOP_ITEMS.slice()), i; for(i=0;i<n;i++){ var it=pool[i%pool.length]; b.push({n:it.n,p:it.p,e:it.e,bc:rnd(1,99999),scanned:false}); } SHOP={phase:'scan',basket:b}; shopRenderScan(); window.scrollTo(0,0); }
+function shopStart(){ if(!OrbitakidxAccess.requireShop()) return; var g=DATA.grade||3,n=g===1?2:g===2?3:g===3?4:rnd(4,6), b=[], pool=shuffle(SHOP_ITEMS.slice()), i; for(i=0;i<n;i++){ var it=pool[i%pool.length]; b.push({n:it.n,p:it.p,e:it.e,bc:rnd(1,99999),scanned:false}); } SHOP={phase:'scan',basket:b}; shopRenderScan(); window.scrollTo(0,0); }
 function shopRenderScan(){ var prods='',i; for(i=0;i<SHOP.basket.length;i++){ var it=SHOP.basket[i];
     prods+='<div class="prod block'+(it.scanned?' scanned':'')+'" onclick="shopScan('+i+')"><div class="pemoji">'+it.e+'</div><div class="pname">'+it.n+'</div><div class="pprice">'+eurStr(it.p)+'</div>'+barcodeSVG(it.bc)+(it.scanned?'<div class="scanmark">✓</div>':'')+'</div>'; }
   var done=shopScannedCount(), n=SHOP.basket.length;
@@ -548,7 +558,7 @@ function studyPay(){ var rows=[
   $("screen").innerHTML=backBar('Formas de pago')+'<div class="panel block"><h2>Formas de pago</h2><p class="sub">Hay varias maneras de pagar en una tienda.</p>'+h+'</div>'; window.scrollTo(0,0); }
 var QUIZ=null;
 function goHome(){ QUIZ=null; renderHome(); window.scrollTo(0,0); }
-function refreshChip(){ $("chipAv").innerHTML=avatarSVG(DATA.avatar); $("chipName").textContent=DATA.name||"Jugador"; $("chipMedals").textContent=unlockedCount(); }
+function refreshChip(){ $("chipAv").innerHTML=avatarSVG(DATA.avatar); $("chipName").textContent=DATA.name||"Jugador"; $("chipMedals").textContent=unlockedCount(); $("courseChip").textContent=courseInfo().short; }
 function backBar(t){ return '<div class="back-bar"><div class="btn ghost sm" onclick="goHome()">⟵ Inicio</div><div class="qmeta" style="font-size:13px">'+escapeHtml(t)+'</div></div>'; }
 function modeCard(color,icon,title,sub,onclick){ return '<div class="card block" onclick="'+onclick+'"><div class="top" style="background:'+color+'"></div><div class="body"><div class="ic"><svg viewBox="0 0 24 24" style="width:100%;height:100%" fill="'+color+'">'+iconPath(icon)+'</svg></div><h3>'+title+'</h3><p>'+sub+'</p></div></div>'; }
 function sessionsToday(){ var hoy=new Date().toISOString().slice(0,10); return (DATA.stats.lastDay===hoy)?(DATA.stats.todayCount||0):0; }
@@ -556,7 +566,7 @@ function heartFull(){ return '<svg viewBox="-2 -2 36 34"><path d="M23.6 2c-3.4 0
 function heartEmpty(){ return '<svg viewBox="-2 -2 36 34"><path d="M23.6 2c-3.4 0-6.3 2.7-7.6 5-1.3-2.3-4.2-5-7.6-5C3.8 2 0 5.6 0 10.2 0 17 8 22 16 27.5 24 22 32 17 32 10.2 32 5.6 28.2 2 23.6 2z" fill="#e6e9f2" stroke="#aab0c4" stroke-width="2.4" stroke-linejoin="round"/></svg>'; }
 function heartsHTML(){ var n=sessionsToday(), slots=(n>6?6:Math.max(n,3)), h='', i; for(i=0;i<slots;i++) h+=(i<n?heartFull():heartEmpty()); if(n>6) h+='<span style="font-weight:800;margin-left:2px;color:var(--ink-soft)">+</span>'; return h; }
 function renderHome(){ var s=DATA.stats, medals=unlockedCount();
-  var html='<div class="hero block"><div class="big-av">'+avatarSVG(DATA.avatar)+'</div><div class="htxt"><h2>¡Hola, '+escapeHtml(DATA.name||"jugador")+'!</h2><p>¿Listo para manejar el dinero? Elige un mundo.</p>'
+  var html='<div class="hero block"><div class="big-av">'+avatarSVG(DATA.avatar)+'</div><div class="htxt"><h2>¡Hola, '+escapeHtml(DATA.name||"jugador")+'!</h2><p>'+courseInfo().label+' · '+courseInfo().focus+'.</p>'
    +'<div class="stat-row"><div class="stat">✅ <b>'+s.totalCorrect+'</b> aciertos</div><div class="stat">🔥 mejor racha <b>'+s.bestStreak+'</b></div><div class="stat">🏅 <b>'+medals+'</b>/'+ACHIEVEMENTS.length+' medallas</div></div></div><div class="today-hearts" title="Partidas jugadas hoy"><span class="th-lbl">Hoy</span>'+heartsHTML()+'</div></div>'
    +'<div class="section-title">ELIGE TU MUNDO</div><div class="grid">'
    +modeCard("var(--pink)","cart","La tienda","¡Juega a cobrar!","shopStart()")
@@ -571,8 +581,8 @@ function renderHome(){ var s=DATA.stats, medals=unlockedCount();
    +'</div>';
   $("screen").innerHTML=html;
 }
-function diffPanel(mode,title,descs){ var keys=["facil","medio","dificil"],labels=["Fácil","Medio","Difícil"],cls=["facil","medio","dificil"];
-  var html=backBar(title)+'<div class="panel block"><h2>'+title+'</h2><p class="sub">Elige la dificultad y a por ello.</p><div class="pills">';
+function diffPanel(mode,title,descs){ var keys=["facil","medio","dificil"],labels=["Fácil","Medio","Difícil"],cls=["facil","medio","dificil"],ci=courseInfo();
+  var html=backBar(title)+'<div class="panel block"><h2>'+title+'</h2><div class="course-note"><span><b>'+ci.label+':</b> '+ci.focus+'.</span><div class="btn green sm" onclick="startQuiz(\''+mode+'\',\''+ci.level+'\',\''+title+' · '+ci.label+'\',false)">Jugar mi nivel</div></div><p class="sub">También puedes practicar cualquier dificultad.</p><div class="pills">';
   for(var i=0;i<3;i++){ var st=DATA.stars[mode][keys[i]]||0; html+='<div class="pill '+cls[i]+'" onclick="startQuiz(\''+mode+'\',\''+keys[i]+'\',\''+title+' · '+labels[i]+'\',false)"><div class="pl">'+labels[i]+'</div><div class="pd">'+descs[i]+'</div><div class="st">'+starStr(st)+'</div></div>'; }
   html+='</div></div>'; $("screen").innerHTML=html; window.scrollTo(0,0);
 }
@@ -583,7 +593,7 @@ var examSel={diff:"medio"};
 function selExam(){ var html=backBar("Examen")+'<div class="panel block"><h2>Prepara tu examen</h2><p class="sub">10 preguntas mezcladas. ¡Saca 10/10 para una medalla!</p><div style="font-weight:900;margin:6px 0 8px">Dificultad</div><div class="choose-row" id="exd">'
    +'<div class="chip" data-d="facil" onclick="examSel.diff=\'facil\';upEx()">Fácil</div><div class="chip" data-d="medio" onclick="examSel.diff=\'medio\';upEx()">Medio</div><div class="chip" data-d="dificil" onclick="examSel.diff=\'dificil\';upEx()">Difícil</div></div>'
    +'<div style="margin-top:16px;text-align:center"><div class="btn gold" style="display:inline-block" onclick="startExam()">¡Empezar examen!</div></div></div>';
-  $("screen").innerHTML=html; window.scrollTo(0,0); upEx();
+  examSel.diff=courseInfo().level; $("screen").innerHTML=html; window.scrollTo(0,0); upEx();
 }
 function upEx(){ var c=document.querySelectorAll('#exd .chip'); for(var i=0;i<c.length;i++) c[i].classList.toggle('on', c[i].getAttribute('data-d')===examSel.diff); }
 function startExam(){ var dl={facil:"Fácil",medio:"Medio",dificil:"Difícil"}; startQuiz("exam",examSel.diff,"Examen · "+dl[examSel.diff],true); }
@@ -595,7 +605,7 @@ function buildItems(mode,level,n,isExam){ var items=[];
   else { for(var i=0;i<n;i++) items.push(genVuelta(level)); }
   return items;
 }
-function startQuiz(mode,level,label,isExam){ var n=10; var items=buildItems(mode,level,n,isExam);
+function startQuiz(mode,level,label,isExam){ var n=isExam?10:(DATA.grade===1?6:DATA.grade===2?8:10); var items=buildItems(mode,level,n,isExam);
   if(!OrbitakidxAccess.requireLevel(level,isExam)) return;
   QUIZ={mode:mode,level:level,label:label,isExam:!!isExam,items:items,index:0,correct:0,count:items.length,answered:false,streak:0,wrong:[]};
   renderQuiz(); window.scrollTo(0,0);
@@ -648,21 +658,23 @@ function renderProgress(){ var s=DATA.stats, html=backBar("Mi progreso")+progBlo
   $("screen").innerHTML=html; window.scrollTo(0,0);
 }
 function confirmReset(){ showModal('<h2>¿Reiniciar todo?</h2><p>Se borrarán medallas, estrellas y estadísticas. No se puede deshacer.</p><div class="result-actions"><div class="btn red" onclick="doReset()">Borrar todo</div><div class="btn ghost" onclick="closeModal()">Cancelar</div></div>'); }
-function doReset(){ var nm=DATA.name,av=DATA.avatar,pr=DATA.prefs; DATA=defaultData(); DATA.name=nm; DATA.avatar=av; DATA.onboarded=true; DATA.prefs=pr; saveData(); refreshChip(); closeModal(); goHome(); }
+function doReset(){ var nm=DATA.name,av=DATA.avatar,pr=DATA.prefs,gr=DATA.grade; DATA=defaultData(); DATA.name=nm; DATA.avatar=av; DATA.grade=gr; DATA.onboarded=true; DATA.prefs=pr; saveData(); refreshChip(); closeModal(); goHome(); }
 
 /* modal / perfil / onboarding */
 var pickAvIdx=0;
 function showModal(inner,noClose){ var bg=document.createElement('div'); bg.className='modal-bg'; bg.innerHTML='<div class="modal block">'+inner+'</div>'; if(!noClose){ bg.addEventListener('click',function(e){ if(e.target===bg) closeModal(); }); } $("modalHost").innerHTML=''; $("modalHost").appendChild(bg); }
 function closeModal(){ $("modalHost").innerHTML=''; }
+function chooseCourse(first){ var html='<h2>¿En qué curso estás?</h2><p>Así adaptamos las cantidades, las compras y la vuelta.</p><div class="pills">'; for(var g=1;g<=4;g++){ var ci=["Monedas y cantidades pequeñas","Precios sencillos","Compras y cambio","Presupuestos y cambio exacto"][g-1]; html+='<div class="pill '+((DATA.grade||3)===g?'medio':'facil')+'" onclick="setCourse('+g+')"><div class="pl">'+g+'.º Primaria</div><div class="pd">'+ci+'</div></div>'; } html+='</div>'; showModal(html,!!first); }
+function setCourse(g){ DATA.grade=g; DATA.onboarded=true; saveData(); refreshChip(); closeModal(); renderHome(); sfx('win'); }
 function pickAv(i){ pickAvIdx=i; sfx('tap'); var o=document.querySelectorAll('#avPick .av-opt'); for(var k=0;k<o.length;k++) o[k].classList.toggle('on', parseInt(o[k].getAttribute('data-i'),10)===i); }
 function openProfile(){ pickAvIdx=DATA.avatar; var avs=''; for(var i=0;i<AVATARS.length;i++) avs+='<div class="av-opt'+(i===pickAvIdx?' on':'')+'" data-i="'+i+'" onclick="pickAv('+i+')">'+avatarSVG(i)+'</div>';
   showModal('<h2>Tu perfil</h2><p>Elige tu nombre y tu personaje.</p><input class="name-input" id="nameInput" maxlength="14" placeholder="Tu nombre" value="'+escapeHtml(DATA.name)+'"><div class="av-pick" id="avPick">'+avs+'</div><div class="result-actions"><div class="btn green" onclick="saveProfile()">Guardar</div><div class="btn ghost" onclick="closeModal()">Cancelar</div></div>'); }
-function saveProfile(){ var inp=$("nameInput"); var n=inp?inp.value.trim():(WNAME||""); DATA.name=n||"Jugador"; DATA.avatar=pickAvIdx; DATA.onboarded=true; saveData(); refreshChip(); closeModal(); renderHome(); sfx('win'); }
+function saveProfile(first){ var inp=$("nameInput"); var n=inp?inp.value.trim():(WNAME||""); DATA.name=n||"Jugador"; DATA.avatar=pickAvIdx; if(first){ saveData(); closeModal(); chooseCourse(true); return; } DATA.onboarded=true; saveData(); refreshChip(); closeModal(); renderHome(); sfx('win'); }
 var WNAME="";
 function welcome(){ WNAME=""; wStep(0); }
 function wStep(n){ if(n===0){ showModal('<div class="wintro"><div class="wglobe">'+bigGlobeSVG()+'</div><h2 class="wtitle">Euri<b>x</b></h2><p class="wsub">Dinero y compras · ÓrbitaKidx</p><div class="btn gold" onclick="sfx(\'start\');wStep(1)">¡EMPEZAR!</div></div>', true); }
   else if(n===1){ showModal('<div class="wintro"><div class="wglobe sm">'+bigGlobeSVG()+'</div><h2>¿Cómo te llamas?</h2><input class="name-input" id="nameInput" maxlength="14" placeholder="Tu nombre" value="'+escapeHtml(WNAME)+'"><div class="result-actions"><div class="btn green" onclick="wName()">Siguiente</div></div></div>', true); setTimeout(function(){ var i=$("nameInput"); if(i) i.focus(); },60); }
-  else { pickAvIdx=0; var avs=''; for(var i=0;i<AVATARS.length;i++) avs+='<div class="av-opt'+(i===0?' on':'')+'" data-i="'+i+'" onclick="pickAv('+i+')">'+avatarSVG(i)+'</div>'; showModal('<h2>Elige tu personaje</h2><p>Será tu compañero de compras.</p><div class="av-pick" id="avPick">'+avs+'</div><div class="pick-go"><div class="btn gold" onclick="saveProfile()">¡A JUGAR!</div></div>', true); } }
+  else { pickAvIdx=0; var avs=''; for(var i=0;i<AVATARS.length;i++) avs+='<div class="av-opt'+(i===0?' on':'')+'" data-i="'+i+'" onclick="pickAv('+i+')">'+avatarSVG(i)+'</div>'; showModal('<h2>Elige tu personaje</h2><p>Será tu compañero de compras.</p><div class="av-pick" id="avPick">'+avs+'</div><div class="pick-go"><div class="btn gold" onclick="saveProfile(true)">Siguiente</div></div>', true); } }
 function wName(){ var i=$("nameInput"); WNAME=(i&&i.value.trim())||"Jugador"; sfx('tap'); wStep(2); }
 function toast(a){ sfx('medal'); var t=document.createElement('div'); t.className='toast'; t.innerHTML='<div style="width:34px;height:34px">'+medalSVG(a.tier,a.icon,false)+'</div><div>¡Medalla nueva!<small>'+a.name+'</small></div>'; $("toastHost").appendChild(t); setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },4000); }
 function confettiBurst(){ var col=["#ffcf3f","#37c871","#3d9bff","#ff6b5e","#7b5cff","#ff9f43"]; for(var i=0;i<60;i++){ (function(){ var c=document.createElement('div'); c.className='confetti'; c.style.left=Math.random()*100+'vw'; c.style.background=col[Math.floor(Math.random()*col.length)]; document.body.appendChild(c); var dur=1800+Math.random()*1400, drift=(Math.random()-0.5)*180; c.animate([{top:'-10px',transform:'translateX(0)',opacity:1},{top:'105vh',transform:'translateX('+drift+'px) rotate('+(720*Math.random())+'deg)',opacity:.9}],{duration:dur,easing:'cubic-bezier(.3,.6,.5,1)'}); setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); },dur); })(); } }

@@ -24,6 +24,7 @@ Los niños pueden escanear productos, sumar una compra, cobrar al cliente y eleg
 
 Qué incluye Eurix:
 
+- Curso configurable de 1.º a 4.º de Primaria, con cantidades y compras adaptadas.
 - Juego de caja con productos, escáner, cobro, cambio y ticket final.
 - Reconocimiento y recuento de monedas y billetes de euro.
 - Sumas de precios con diferentes niveles de dificultad.
